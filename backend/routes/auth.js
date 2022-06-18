@@ -16,10 +16,10 @@ router.post('/register',async (req, res) => {
 
     //create user
     const user = new User({
-        username : req.body.username,
+        e : req.body.e,
         hash : hashedPassword,
-        firstName : req.body.firstName,
-        lastName : req.body.lastName
+        _n : req.body._n,
+        m : req.body.m,
     });
     try{
         const savedUser = await user.save();
@@ -34,7 +34,7 @@ router.post('/register',async (req, res) => {
 
 router.post('/login',async (req, res) => {
     
-    const user = await User.findOne({username : req.body.username});
+    const user = await User.findOne({e : req.body.e});
     if(! user ) return res.status(400).json({ registered : false});
 
     console.log(user);
@@ -44,7 +44,7 @@ router.post('/login',async (req, res) => {
     //create token and add it to header
     const token = jwt.sign({ _id : user._id},process.env.TOKEN_SECRET);
     res.header('auth-header',token);
-    res.json({success: true, message: 'Logged in'});
+    res.json({user});
 
 });
 

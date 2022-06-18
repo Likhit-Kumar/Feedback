@@ -6,7 +6,7 @@ const expressWs = require('express-ws');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.port || 5000;
+const port = process.env.port || 5001;
 
 const corsOptions = {
     exposedHeaders: 'auth-header',
@@ -26,11 +26,13 @@ connection.once('open', () => {
  
 const authRouter = require('./routes/auth');
 const commentsRouter = require('./routes/comments');
-const cacheRouter = require('./routes/cache');
+// const cacheRouter = require('./routes/cache');
+const dataRouter = require('./routes/data');
 
 app.use('/api/users',authRouter);
 app.use('/api/comments',commentsRouter);
-app.use('/api/cache', cacheRouter);
+app.use('/api/data', dataRouter);
+// app.use('/api/cache', cacheRouter);
 
 app.ws('/comment', (ws, req) => {
 

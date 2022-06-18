@@ -8,35 +8,35 @@ export default class RegisterUser extends Component {
     constructor(props){
         super(props);
        
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeFirstName = this.onChangeFirstName.bind(this);
-        this.onChangeLastName = this.onChangeLastName.bind(this);
+        this.onChangeE = this.onChangeE.bind(this);
+        this.onChange_N = this.onChange_N.bind(this);
+        this.onChangeM = this.onChangeM.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
 
         this.onSubmit = this.onSubmit.bind(this);
     
         this.state = {
-            username: '',
-            firstName: '',
-            lastName: '',
+            e: '',
+            _n: '',
+            m: '',
             password: ''
         }
       }
-      onChangeUsername(e){
+      onChangeE(e){
           this.setState({
-              username : e.target.value
+              e : e.target.value
           });
       }
 
-      onChangeFirstName(e){
+      onChange_N(e){
         this.setState({
-            firstName : e.target.value
+            _n : e.target.value
         });
       }
     
-      onChangeLastName(e){
+      onChangeM(e){
         this.setState({
-            lastName : e.target.value
+            m : e.target.value
         });
       }
       
@@ -48,18 +48,18 @@ export default class RegisterUser extends Component {
     onSubmit(e){
         e.preventDefault();
         const user = {
-            username : this.state.username, 
-            firstName : this.state.firstName,
-            lastName : this.state.lastName,
+            e : this.state.e, 
+            _n : this.state._n,
+            m : this.state.m,
             hash : this.state.password
         }
-        axios.post('http://localhost:5000/api/users/register', user)
+        axios.post('http://localhost:5001/api/users/register', user)
             .then(res => {
               const authData = {
-                username : this.state.username,
+                e : this.state.e,
                 password : this.state.password
             }
-              axios.post('http://localhost:5000/api/users/login', authData)
+              axios.post('http://localhost:5001/api/users/login', authData)
               .then(res => {
                 console.log(res.headers['auth-header']);
                 sessionStorage.setItem("jwt-token",res.headers['auth-header']);
@@ -85,9 +85,9 @@ export default class RegisterUser extends Component {
               <div className="form-group">
                 <input type="text"
                     required
-                    value={this.state.username}
-                    onChange={this.onChangeUsername}
-                    placeholder="Username"
+                    value={this.state.e}
+                    onChange={this.onChangeE}
+                    placeholder="Email"
                     className="form-control"
                     >    
                 </input>
@@ -95,17 +95,17 @@ export default class RegisterUser extends Component {
               <div className="form-group form-inline">
                 <input type="text"
                     required
-                    value={this.state.firstName}
-                    onChange={this.onChangeFirstName}
+                    value={this.state._n}
+                    onChange={this.onChange_N}
                     placeholder="First Name"
                     className="form-control"
                     >    
                 </input>
                 <input type="text"
                     required
-                    value={this.state.lastName}
-                    onChange={this.onChangeLastName}
-                    placeholder="Last Name"
+                    value={this.state.m}
+                    onChange={this.onChangeM}
+                    placeholder="Mobile Number"
                     className="form-control"
                     >    
                 </input>

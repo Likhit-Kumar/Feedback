@@ -12,9 +12,25 @@ export default class AddComment extends Component {
 
     this.state = {
         content: '',
-        upvotes: 0,
-        downvotes: 0
     }
+  }
+
+  componentDidMount(){
+    // const jwt = sessionStorage.getItem("jwt-token");
+    const user = sessionStorage.getItem("UserData");
+    console.log(user)
+
+    // if(jwt === null){
+    //   console.log('not logged in');
+    // }
+    // else{
+      // const headers = { headers: {
+      //   "Accept": "application/json",
+      //   "Content-type": "application/json",
+      //   "auth-header": jwt,
+      //   }
+    //   }
+    // }
   }
   
   onChangeContent(e){
@@ -45,11 +61,11 @@ export default class AddComment extends Component {
         "auth-header": jwt,
         }
       }
-      axios.post('http://localhost:5000/api/comments/add', comment, headers)
+      axios.post('http://localhost:5001/api/comments/add', comment, headers)
         .then(res => { 
           const json = { type: 'comment' };
           json.data = res.data;
-          console.log(json);
+          console.log(json); 
           this.props.actions.send(JSON.stringify(json));
           this.setState({content : ''})
           

@@ -1,25 +1,27 @@
 import React, { Component } from "react"
 import axios from "axios"
 import cogoToast from 'cogo-toast';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default class AuthUser  extends Component {
 
     constructor(props){
         super(props);
        
-        this.onChangeUsername = this.onChangeUsername.bind(this);
+        this.onChangeE = this.onChangeE.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
-
+        this.onChangeReCaptcha = this.onChangeReCaptcha.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     
         this.state = {
-            username: '',
-            password: ''
+            e: '',
+            password: '',
+            isVerified: false
         }
       }
-      onChangeUsername(e){
+      onChangeE(e){
           this.setState({
-              username : e.target.value
+              e : e.target.value
           });
       }
 
@@ -28,17 +30,29 @@ export default class AuthUser  extends Component {
             password : e.target.value
         });
       }
+      onChangeReCaptcha(value) {
+        console.log("Captcha value:", value);
+        this.setState({
+          isVerified: true
+        })
+      }
     onSubmit(e){
         e.preventDefault();
         const authData = {
-            username : this.state.username,
+            e : this.state.e,
             password : this.state.password
         }
         console.log(authData);
-        axios.post('http://localhost:5000/api/users/login', authData)
+        axios.post('http://localhost:5001/api/users/login', authData)
             .then(res => {
               console.log(res.headers['auth-header']);
+              // console.log(res.data);
               sessionStorage.setItem("jwt-token",res.headers['auth-header']);
+              sessionStorage.setItem("UserDataEmail",res.data.user.e);              
+              sessionStorage.setItem("UserDataName",res.data.user._n);
+              sessionStorage.setItem("UserDataMobile",res.data.user.m);              
+              sessionStorage.setItem("UserDataMobile",res.data.user.id);
+
               cogoToast.success('Logged in successfully!', { hideAfter : 5 })
                   .then(() => window.location = '/')
             })
@@ -53,7 +67,7 @@ export default class AuthUser  extends Component {
               }
               else
                 cogoToast.error('Login failed, please check your credentials & try again!', { hideAfter : 5 })
-                .then(() => this.setState({username : '', password : ''}))
+                .then(() => this.setState({e : '', password : ''}))
             });
         
       }
@@ -65,9 +79,9 @@ export default class AuthUser  extends Component {
               <div className="form-group">
                 <input type="text"
                     required
-                    value={this.state.username}
-                    onChange={this.onChangeUsername}
-                    placeholder="Username"
+                    value={this.state.e}
+                    onChange={this.onChangeE}
+                    placeholder="Email"
                     className="form-control"
                     >    
                 </input>
@@ -83,8 +97,12 @@ export default class AuthUser  extends Component {
                     >    
                 </input>
               </div>
+              <ReCAPTCHA
+                sitekey="6Leu-2ggAAAAAPb1IwMlEHofw1Vkvg4-C6osOTxk"
+                onChange={this.onChangeReCaptcha}
+              />              
               <div className="form-group" align="right">
-                <input type="submit"
+                <input type="submit" disabled={!this.state.isVerified}
                     className="btn btn-dark"
                     value="Login">
                 </input>
